@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고급 컴퓨팅 사고 테스트</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #5a67d8;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .difficulty-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .question {
+            background: #f8f9ff;
+            border-left: 5px solid #5a67d8;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+            display: none;
+            position: relative;
+        }
+        
+        .question.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .question h3 {
+            color: #5a67d8;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+        }
+        
+        .difficulty-indicator {
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-left: 15px;
+            font-weight: normal;
+        }
+        
+        .problem-context {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #3182ce;
+        }
+        
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        
+        .answer-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        .answer-input:focus {
+            border-color: #5a67d8;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+        }
+        
+        .thinking-prompt {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+        
+        .button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px 10px 20px 0;
+            transition: transform 0.2s ease;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .progress {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .result {
+            display: none;
+            padding: 30px;
+            background: linear-gradient(135deg, #e3ffe7 0%, #d4f8e8 100%);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .score-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .total-score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #38a169;
+            margin: 20px 0;
+        }
+        
+        .detailed-feedback {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #5a67d8;
+        }
+        
+        .answer-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        
+        .your-answer, .model-answer {
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .your-answer {
+            background: #fef5e7;
+            border-left: 4px solid #f6ad55;
+        }
+        
+        .model-answer {
+            background: #e6fffa;
+            border-left: 4px solid #38b2ac;
+        }
+        
+        .score-breakdown {
+            display: flex;
+            justify-content: space-around;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5a67d8;
+        }
+        
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: #4299e1;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .answer-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .score-breakdown {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 고급 컴퓨팅 사고 테스트</h1>
+            <div class="difficulty-badge">HIGH LEVEL</div>
+            <p>진짜 개발자처럼 생각할 수 있는지 확인해보세요!</p>
+        </div>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+        
+        <div id="questionContainer">
+            <!-- 문제 1: 복잡한 문제 분해 -->
+            <div class="question active" data-question="0">
+                <div class="timer" id="timer1">⏱️ <span id="time1">10:00</span></div>
+                <h3>🧩 문제 1: 실전 문제 분해 <span class="difficulty-indicator">HARD</span></h3>
+                
+                <div class="problem-context">
+                    <strong>상황:</strong> 당신은 넷플릭스 같은 스트리밍 서비스의 추천 시스템을 개발해야 합니다. 
+                    사용자의 시청 기록, 평점, 장르 선호도, 시청 시간대, 디바이스 정보를 바탕으로 
+                    개인화된 콘텐츠를 추천하는 시스템입니다.
+                </div>
+                
+                <p><strong>요구사항:</strong></p>
+                <ul>
+                    <li>실시간으로 추천 결과가 업데이트되어야 함</li>
+                    <li>1000만명 이상의 동시 사용자 지원</li>
+                    <li>새로운 콘텐츠가 추가되면 즉시 추천에 반영</li>
+                    <li>사용자별 추천 이유도 함께 제공</li>
+                </ul>
+                
+                <div class="thinking-prompt">
+                    💭 이 복잡한 시스템을 어떻게 작은 모듈들로 나누어서 개발하시겠습니까? 
+                    각 모듈의 역할과 상호작용도 함께 설명해주세요.
+                </div>
+                
+                <textarea class="answer-input" id="answer0" placeholder="여기에 당신의 분해 전략을 자세히 작성해주세요. 각 모듈의 책임과 데이터 흐름도 포함하세요."></textarea>
+            </div>
+
+            <!-- 문제 2: 고급 패턴 인식 -->
+            <div class="question" data-question="1">
+                <div class="timer" id="timer2">⏱️ <span id="time2">8:00</span></div>
+                <h3>🔍 문제 2: 숨겨진 패턴 발견 <span class="difficulty-indicator">EXPERT</span></h3>
+                
+                <div class="problem-context">
+                    다음은 어떤 웹사이트의 API 응답 시간 데이터입니다 (밀리초 단위):
+                </div>
+                
+                <div class="code-block">
+월요일: [120, 150, 180, 200, 250, 180, 160, 140, 130, 120, 110, 105]
+화요일: [110, 140, 170, 190, 240, 170, 150, 130, 120, 110, 100, 95]
+수요일: [100, 130, 160, 180, 230, 160, 140, 120, 110, 100, 90, 85]
+목요일: [130, 160, 190, 210, 260, 190, 170, 150, 140, 130, 120, 115]
+금요일: [140, 170, 200, 220, 280, 200, 180, 160, 150, 140, 130, 125]
+토요일: [80, 100, 120, 140, 180, 140, 120, 100, 90, 80, 70, 65]
+일요일: [90, 110, 130, 150, 190, 150, 130, 110, 100, 90, 80, 75]
+                </div>
+                
+                <div class="thinking-prompt">
+                    💭 이 데이터에서 어떤 패턴들을 발견할 수 있나요? 
+                    그리고 이 패턴을 바탕으로 서버 최적화 전략을 어떻게 세우시겠습니까?
+                </div>
+                
+                <textarea class="answer-input" id="answer1" placeholder="발견한 패턴들과 그 원인, 그리고 이를 활용한 최적화 방안을 구체적으로 작성해주세요."></textarea>
+            </div>
+
+            <!-- 문제 3: 고급 추상화 -->
+            <div class="question" data-question="2">
+                <div class="timer" id="timer3">⏱️ <span id="time3">12:00</span></div>
+                <h3>🎯 문제 3: 시스템 추상화 설계 <span class="difficulty-indicator">ARCHITECT</span></h3>
+                
+                <div class="problem-context">
+                    여러 종류의 결제 시스템(신용카드, 페이팔, 암호화폐, 계좌이체, 포인트)을 
+                    통합하는 결제 게이트웨이를 설계해야 합니다. 각 결제 방식마다 다른 API, 
+                    다른 인증 방식, 다른 에러 처리가 필요합니다.
+                </div>
+                
+                <div class="code-block">
+// 현재 각 결제 방식별로 다른 코드들이 산재해있음
+creditCard.process(amount, cardInfo, merchantId);
+paypal.makePayment(user, amount, callback);
+crypto.transfer(wallet, targetWallet, amount, gasPrice);
+bankTransfer.initiate(account, routing, amount, memo);
+points.deduct(userId, pointAmount, transactionId);
+                </div>
+                
+                <div class="thinking-prompt">
+                    💭 이런 복잡한 결제 시스템들을 어떻게 하나의 일관된 인터페이스로 추상화하시겠습니까? 
+                    확장성과 유지보수성을 고려한 설계를 제시해주세요.
+                </div>
+                
+                <textarea class="answer-input" id="answer2" placeholder="추상화 레이어의 설계와 각 결제 방식을 통합하는 방법을 상세히 설명해주세요. 디자인 패턴도 활용해보세요."></textarea>
+            </div>
+
+            <!-- 문제 4: 알고리즘 최적화 -->
+            <div class="question" data-question="3">
+                <div class="timer" id="timer4">⏱️ <span id="time4">15:00</span></div>
+                <h3>⚡ 문제 4: 성능 최적화 알고리즘 <span class="difficulty-indicator">PERFORMANCE</span></h3>
+                
+                <div class="problem-context">
+                    소셜 미디어 피드를 생성하는 알고리즘을 최적화해야 합니다. 
+                    사용자 A가 팔로우하는 1000명의 최근 게시물 중에서 가장 관련성 높은 50개를 선택해야 합니다.
+                </div>
+                
+                <div class="code-block">
+// 각 게시물의 점수 계산 요소들
+- 작성 시간 (최신일수록 높은 점수)
+- 좋아요 수 (많을수록 높은 점수)  
+- 댓글 수 (많을수록 높은 점수)
+- 작성자와의 친밀도 (자주 상호작용할수록 높은 점수)
+- 사용자의 관심 카테고리 매칭도
+- 게시물 타입 선호도 (사진/동영상/텍스트)
+                </div>
+                
+                <p><strong>제약사항:</strong></p>
+                <ul>
+                    <li>피드 로딩 시간은 100ms 이내여야 함</li>
+                    <li>동시에 100만명이 피드를 요청할 수 있음</li>
+                    <li>실시간으로 새 게시물이 추가됨</li>
+                </ul>
+                
+                <div class="thinking-prompt">
+                    💭 이런 대용량 실시간 랭킹 시스템을 어떻게 효율적으로 구현하시겠습니까? 
+                    자료구조, 캐싱 전략, 병렬 처리 등을 모두 고려해서 답해주세요.
+                </div>
+                
+                <textarea class="answer-input" id="answer3" placeholder="성능을 고려한 알고리즘 설계와 최적화 전략을 구체적으로 작성해주세요."></textarea>
+            </div>
+
+            <!-- 문제 5: 종합적 시스템 설계 -->
+            <div class="question" data-question="4">
+                <div class="timer" id="timer5">⏱️ <span id="time5">20:00</span></div>
+                <h3>🚀 문제 5: 종합 시스템 아키텍처 <span class="difficulty-indicator">SYSTEM DESIGN</span></h3>
+                
+                <div class="problem-context">
+                    COVID-19 같은 전염병 확산을 실시간으로 추적하고 예측하는 시스템을 설계해야 합니다.
+                </div>
+                
+                <p><strong>요구사항:</strong></p>
+                <ul>
+                    <li>전세계 병원/보건소에서 실시간 데이터 수집</li>
+                    <li>확산 패턴 분석 및 미래 예측</li>
+                    <li>위험 지역 실시간 알림</li>
+                    <li>정부/의료진/일반인별 맞춤 대시보드</li>
+                    <li>가짜 뉴스 필터링</li>
+                    <li>다국어 지원 및 접근성 보장</li>
+                </ul>
+                
+                <div class="thinking-prompt">
+                    💭 이런 글로벌 규모의 실시간 모니터링 시스템을 어떻게 설계하시겠습니까? 
+                    기술 스택, 아키텍처, 데이터 파이프라인, 보안, 확장성을 모두 고려해주세요.
+                </div>
+                
+                <textarea class="answer-input" id="answer4" placeholder="전체 시스템 아키텍처와 핵심 기술적 도전과제들의 해결 방안을 종합적으로 작성해주세요."></textarea>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="button" id="nextBtn" onclick="nextQuestion()">다음 문제</button>
+            <button class="button" id="prevBtn" onclick="prevQuestion()" style="display:none;">이전 문제</button>
+        </div>
+
+        <div class="result" id="result">
+            <div class="score-section">
+                <h2>🎉 테스트 완료!</h2>
+                <div class="total-score" id="totalScore"></div>
+                
+                <div class="score-breakdown">
+                    <div class="score-item">
+                        <div class="score-value" id="decompositionScore">-</div>
+                        <div>문제 분해</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value" id="patternScore">-</div>
+                        <div>패턴 인식</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value" id="abstractionScore">-</div>
+                        <div>추상화</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value" id="algorithmScore">-</div>
+                        <div>알고리즘</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value" id="systemScore">-</div>
+                        <div>시스템 설계</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="detailedFeedback"></div>
+            
+            <button class="button" onclick="restartTest()">다시 도전하기</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let answers = {};
+        let totalQuestions = 5;
+        let timers = {};
+
+        // 모범 답안과 평가 기준
+        const modelAnswers = {
+            0: {
+                keywords: ['데이터 수집', '전처리', '머신러닝', '추천 엔진', '실시간', '캐싱', '로드밸런싱', '마이크로서비스', 'API', '데이터베이스', '모니터링'],
+                structure: ['모듈 분리', '데이터 흐름', '확장성', '성능'],
+                sampleAnswer: `추천 시스템을 다음과 같이 모듈화하겠습니다:
+
+1. 데이터 수집 모듈: 사용자 행동, 콘텐츠 메타데이터 실시간 수집
+2. 데이터 전처리 모듈: 수집된 데이터 정제 및 특성 추출
+3. 머신러닝 모듈: 협업 필터링, 콘텐츠 기반 필터링 알고리즘
+4. 추천 엔진: 개인화된 추천 결과 생성
+5. 캐싱 레이어: Redis를 활용한 추천 결과 캐싱
+6. API 게이트웨이: 클라이언트 요청 처리 및 로드밸런싱
+7. 모니터링 시스템: 성능 지표 및 추천 품질 모니터링
+
+각 모듈은 독립적으로 스케일링 가능하며, 메시지 큐를 통해 비동기 통신합니다.`
+            },
+            1: {
+                keywords: ['시간대별', '요일별', '트래픽 패턴', '캐싱', '로드밸런싱', '오토스케일링', '피크 시간', '최적화'],
+                structure: ['패턴 분석', '원인 추론', '최적화 방안'],
+                sampleAnswer: `발견된 패턴들:
+
+1. 시간대별 패턴: 오전 9-11시, 오후 1-2시에 응답시간 증가 (업무시간 피크)
+2. 요일별 패턴: 주말(토일)이 평일보다 20-30% 빠른 응답시간
+3. 점진적 개선: 주중에는 하루가 갈수록 응답시간이 개선됨
+
+최적화 전략:
+- 피크 시간대 오토스케일링 설정
+- CDN 캐싱으로 정적 자원 분산
+- 데이터베이스 읽기 전용 복제본 추가
+- 비동기 처리로 블로킹 작업 최소화`
+            },
+            2: {
+                keywords: ['인터페이스', '전략 패턴', '팩토리 패턴', '어댑터', '추상화', '의존성 주입', '에러 처리'],
+                structure: ['공통 인터페이스', '구현체 분리', '확장성'],
+                sampleAnswer: `PaymentGateway 추상화 설계:
+
+1. PaymentInterface 정의:
+   - process(amount, paymentData, options)
+   - validate(paymentData)
+   - handleCallback(response)
+
+2. 각 결제방식별 Adapter 구현:
+   - CreditCardAdapter, PayPalAdapter 등
+   - 공통 인터페이스를 구현하되 내부 로직은 독립적
+
+3. PaymentFactory로 결제방식별 인스턴스 생성
+4. PaymentManager에서 전체 결제 플로우 관리
+5. 공통 에러 처리 및 로깅 레이어
+
+이를 통해 새로운 결제 방식 추가시 기존 코드 수정 없이 확장 가능합니다.`
+            },
+            3: {
+                keywords: ['우선순위 큐', '캐싱', '인덱싱', '병렬처리', '메모리', '실시간', '배치처리', '샤딩'],
+                structure: ['알고리즘 설계', '캐싱 전략', '성능 최적화'],
+                sampleAnswer: `실시간 피드 랭킹 최적화:
+
+1. 사전 계산 방식:
+   - 배치 잡으로 기본 점수 미리 계산
+   - Redis Sorted Set으로 사용자별 후보 게시물 저장
+
+2. 실시간 보정:
+   - 최신 상호작용 데이터로 점수 실시간 조정
+   - Kafka를 통한 이벤트 스트리밍
+
+3. 캐싱 전략:
+   - L1: 개인화된 피드 캐시 (5분)
+   - L2: 인기 게시물 캐시 (30분)
+
+4. 병렬 처리:
+   - 점수 계산을 여러 워커로 분산
+   - 비동기 처리로 응답시간 단축`
+            },
+            4: {
+                keywords: ['마이크로서비스', '데이터 파이프라인', '실시간 처리', '머신러닝', '보안', '확장성', 'API', '모니터링'],
+                structure: ['아키텍처 설계', '기술 스택', '확장성', '보안'],
+                sampleAnswer: `글로벌 전염병 추적 시스템 설계:
+
+1. 데이터 수집 레이어:
+   - REST API + WebSocket으로 실시간 데이터 수집
+   - Apache Kafka로 대용량 데이터 스트리밍
+
+2. 데이터 처리:
+   - Apache Spark로 대용량 배치 처리
+   - Apache Flink로 실시간 스트림 처리
+
+3. 예측 모델:
+   - TensorFlow로 확산 패턴 예측 모델
+   - 시계열 분석으로 미래 추세 예측
+
+4. 시각화 레이어:
+   - React + D3.js 대시보드
+   - 역할별 맞춤 UI 제공
+
+5. 인프라:
+   - Kubernetes 기반 마이크로서비스
+   - 멀티 리전 배포로 가용성 확보`
+            }
+        };
+
+        function startTimer(questionNum, minutes) {
+            const totalSeconds = minutes * 60;
+            let remainingSeconds = totalSeconds;
+            
+            const timerElement = document.getElementById(`time${questionNum + 1}`);
+            
+            timers[questionNum] = setInterval(() => {
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+                timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (remainingSeconds <= 60) {
+                    timerElement.parentElement.style.background = '#e53e3e';
+                }
+                
+                remainingSeconds--;
+                
+                if (remainingSeconds < 0) {
+                    clearInterval(timers[questionNum]);
+                    timerElement.textContent = '시간 초과';
+                }
+            }, 1000);
+        }
+
+        function evaluateAnswer(questionIndex, userAnswer) {
+            const model = modelAnswers[questionIndex];
+            let score = 0;
+            const feedback = [];
+            
+            // 키워드 매칭 점수 (40점)
+            const keywordMatches = model.keywords.filter(keyword => 
+                userAnswer.toLowerCase().includes(keyword.toLowerCase())
+            ).length;
+            const keywordScore = Math.min(40, (keywordMatches / model.keywords.length) * 40);
+            score += keywordScore;
+            
+            // 구조적 완성도 점수 (30점)  
+            const structureMatches = model.structure.filter(element =>
+                userAnswer.toLowerCase().includes(element.toLowerCase())
+            ).length;
+            const structureScore = Math.min(30, (structureMatches / model.structure.length) * 30);
+            score += structureScore;
+            
+            // 답변 길이 및 깊이 점수 (20점)
+            const wordCount = userAnswer.trim().split(/\s+/).length;
+            const lengthScore = Math.min(20, (wordCount / 100) * 20);
+            score += lengthScore;
+            
+            // 창의성 보너스 (10점)
+            const creativityBonus = userAnswer.includes('새로운') || userAnswer.includes('혁신') || 
+                                  userAnswer.includes('독창적') ? 10 : 0;
+            score += creativityBonus;
+            
+            return {
+                score: Math.round(score),
+                keywordScore,
+                structureScore,
+                lengthScore,
+                creativityBonus,
+                feedback: [
+                    `키워드 매칭: ${keywordMatches}/${model.keywords.length} (${Math.round(keywordScore)}점)`,
+                    `구조적 완성도: ${structureMatches}/${model.structure.length} (${Math.round(structureScore)}점)`,
+                    `답변 깊이: ${wordCount}단어 (${Math.round(lengthScore)}점)`,
+                    `창의성: ${creativityBonus}점`
+                ]
+            };
+        }
+
+        function nextQuestion() {
+            // 현재 답변 저장
+            const currentAnswer = document.getElementById(`answer${currentQuestion}`).value.trim();
+            if (currentAnswer.length < 50) {
+                alert('답변이 너무 짧습니다. 최소 50자 이상 작성해주세요.');
+                return;
+            }
+            
+            answers[currentQuestion] = currentAnswer;
+            
+            // 타이머 정지
+            if (timers[currentQuestion]) {
+                clearInterval(timers[currentQuestion]);
+            }
+            
+            if (currentQuestion < totalQuestions - 1) {
+                // 현재 질문 숨기기
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                
+                currentQuestion++;
+                
+                // 다음 질문 보이기
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+                
+                // 새 타이머 시작
+                const timerMinutes = [10, 8, 12, 15, 20];
+                startTimer(currentQuestion, timerMinutes[currentQuestion]);
+                
+                // 진행률 업데이트
+                updateProgress();
+                
+                // 버튼 상태 업데이트
+                updateButtons();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                // 현재 답변 저장
+                answers[currentQuestion] = document.getElementById(`answer${currentQuestion}`).value;
+                
+                // 타이머 정지
+                if (timers[currentQuestion]) {
+                    clearInterval(timers[currentQuestion]);
+                }
+                
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.remove('active');
+                currentQuestion--;
+                document.querySelector(`[data-question="${currentQuestion}"]`).classList.add('active');
+                updateProgress();
+                updateButtons();
+                
+                // 이전 답변 복원
+                if (answers[currentQuestion]) {
+                    document.getElementById(`answer${currentQuestion}`).value = answers[currentQuestion];
+                }
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function updateButtons() {
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            
+            // 이전 버튼
+            prevBtn.style.display = currentQuestion > 0 ? 'inline-block' : 'none';
+            
+            // 다음 버튼
+            if (currentQuestion === totalQuestions - 1) {
+                nextBtn.textContent = '채점하기';
+            } else {
+                nextBtn.textContent = '다음 문제';
+            }
+        }
+
+        function showResults() {
+            document.getElementById('questionContainer').style.display = 'none';
+            document.querySelector('.button-container').style.display = 'none';
+            
+            let totalScore = 0;
+            let categoryScores = [0, 0, 0, 0, 0]; // 각 영역별 점수
+            let detailedFeedbackHTML = '';
+            
+            // 각 답변 평가
+            for (let i = 0; i < totalQuestions; i++) {
+                const userAnswer = answers[i] || '';
+                const evaluation = evaluateAnswer(i, userAnswer);
+                totalScore += evaluation.score;
+                categoryScores[i] = evaluation.score;
+                
+                const questionTitles = [
+                    '문제 분해 능력',
+                    '패턴 인식 능력', 
+                    '추상화 설계',
+                    '알고리즘 최적화',
+                    '시스템 아키텍처'
+                ];
+                
+                detailedFeedbackHTML += `
+                    <div class="detailed-feedback">
+                        <h4>${questionTitles[i]} - ${evaluation.score}/100점</h4>
+                        <div class="answer-comparison">
+                            <div class="your-answer">
+                                <strong>🖊️ 당신의 답변:</strong><br>
+                                ${userAnswer.substring(0, 200)}${userAnswer.length > 200 ? '...' : ''}
+                            </div>
+                            <div class="model-answer">
+                                <strong>⭐ 모범 답안 예시:</strong><br>
+                                ${modelAnswers[i].sampleAnswer.substring(0, 200)}...
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            ${evaluation.feedback.map(f => `<div>• ${f}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 총점 표시
+            const averageScore = Math.round(totalScore / totalQuestions);
+            document.getElementById('totalScore').textContent = `${averageScore}/100점`;
+            
+            // 카테고리별 점수 표시
+            document.getElementById('decompositionScore').textContent = categoryScores[0];
+            document.getElementById('patternScore').textContent = categoryScores[1];
+            document.getElementById('abstractionScore').textContent = categoryScores[2];
+            document.getElementById('algorithmScore').textContent = categoryScores[3];
+            document.getElementById('systemScore').textContent = categoryScores[4];
+            
+            // 전체 평가 추가
+            let overallFeedback = '';
+            if (averageScore >= 80) {
+                overallFeedback = `
+                    <div class="detailed-feedback" style="border-left-color: #38a169; background: #e6fffa;">
+                        <h3>🚀 시니어 개발자 수준!</h3>
+                        <p>당신은 복잡한 시스템을 설계하고 최적화할 수 있는 뛰어난 컴퓨팅 사고 능력을 가지고 있습니다. 
+                        실제 프로덕션 환경에서 마주치는 복잡한 문제들을 체계적으로 해결할 수 있을 것입니다.</p>
+                    </div>
+                `;
+            } else if (averageScore >= 60) {
+                overallFeedback = `
+                    <div class="detailed-feedback" style="border-left-color: #3182ce; background: #ebf8ff;">
+                        <h3>💪 중급 개발자 수준!</h3>
+                        <p>좋은 컴퓨팅 사고 기반을 가지고 있습니다. 더 많은 실전 경험과 학습을 통해 
+                        고급 아키텍처 설계 능력을 기를 수 있을 것입니다.</p>
+                    </div>
+                `;
+            } else if (averageScore >= 40) {
+                overallFeedback = `
+                    <div class="detailed-feedback" style="border-left-color: #f6ad55; background: #fffaf0;">
+                        <h3>📚 주니어 개발자 수준!</h3>
+                        <p>기본적인 사고 능력은 갖추고 있지만, 더 복잡한 시스템 설계와 최적화 경험이 필요합니다. 
+                        실제 프로젝트를 통해 더 많은 경험을 쌓아보세요.</p>
+                    </div>
+                `;
+            } else {
+                overallFeedback = `
+                    <div class="detailed-feedback" style="border-left-color: #e53e3e; background: #fed7e2;">
+                        <h3>🌱 학습자 수준!</h3>
+                        <p>컴퓨팅 사고는 연습을 통해 충분히 기를 수 있는 능력입니다. 
+                        작은 프로젝트부터 시작해서 점진적으로 복잡한 문제에 도전해보세요!</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('detailedFeedback').innerHTML = overallFeedback + detailedFeedbackHTML;
+            document.getElementById('result').style.display = 'block';
+        }
+
+        function restartTest() {
+            currentQuestion = 0;
+            answers = {};
+            
+            // 모든 타이머 정지
+            Object.values(timers).forEach(timer => clearInterval(timer));
+            timers = {};
+            
+            // 모든 질문 숨기기
+            document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+            document.querySelector('[data-question="0"]').classList.add('active');
+            
+            // 답변 입력창 초기화
+            for (let i = 0; i < totalQuestions; i++) {
+                document.getElementById(`answer${i}`).value = '';
+            }
+            
+            // UI 초기화
+            document.getElementById('questionContainer').style.display = 'block';
+            document.querySelector('.button-container').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            
+            updateProgress();
+            updateButtons();
+            
+            // 첫 번째 문제 타이머 시작
+            startTimer(0, 10);
+        }
+
+        // 초기 설정
+        updateProgress();
+        updateButtons();
+        startTimer(0, 10); // 첫 번째 문제 10분 타이머 시작
+    </script>
+</body>
+</html>
