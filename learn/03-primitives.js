@@ -20,6 +20,7 @@
 // 아포스트로피 (이스케이프 처리)
 // It's my birthday today!
 // console.log('It\'s my birthday today!')
+// console.log('Let\'s go and Here we go!')
 
 // '나의 100m 달리기 최고 기록은 12\'26"이야.'
 // "나의 100m 달리기 최고 기록은 12'26\"이야."

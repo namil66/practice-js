@@ -1,0 +1,128 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background:rgb(240,240,240);
+
+  display:flex; /*요소의 직계 자식 요소들이 기본적으로 가로로 일렬 정렬돼.*/
+                /*💡body의 직계자식은 .carousel 뿐임*/
+
+  /*💡justify-content,align-items 모두 부모가 자식들을 정렬시키는 속성*/
+  justify-content:center; /*주축(x축) 중앙 정렬*/
+  align-items:center;     /*교차축(y축) 중앙 정렬 */
+                          /*💡부모 요소의 세로(height) 기준으로 자식 요소를 교차축(Y축) 중앙 정렬해주는 건데 부모높이가 지정안되어 있으면 적용안됨*/
+  height:100vh;
+}
+
+
+/*  📌📌 carousel 영역 📌📌  */
+.carousel{
+    width:100%;/*부모(body)의 전체 너비를 가져서 가운데 정렬이(justify-contenr:center) 무의미해짐, 부모의 크기보다 작으면 중앙 정렬이 다시 생김
+                 그럼 .carousel은 이미 부모 너비만큼 꽉 찬 상태니까, 굳이 중앙 정렬이 필요가 없다고 판단돼서 왼쪽 정렬처럼 보이게 되는 거야.*/
+    max-width:500px; /*요소의 최대 너비를 500px로 제한한다(500px보다 작으면(ex.400px라면) 그 크기(100%:400px)만큼만 적용함*/
+                     /*부모의 너비보다 작아졌으면 다시 중앙 정렬됨*/
+    text-align:center; /*💡자식 요소가 inline 또는 inline-block, inline-flex, img, text일 때만 중앙 정렬함”*/
+                       /*손자가 inline 계열이고, 그걸 감싸는 부모 block 요소가 text-align: center 영향을 받으면,
+                         손자 inline 요소가 부모 안에서 가운데 정렬되어 보이는 것뿐이야.*/
+    position:relative; /*💡자식 요소가 position: absolute일 때, 그 기준점(=기준 좌표)을 정해주기 위해서 사용*/
+}
+
+
+
+.image-wrapper{}
+.image-wrapper img{}
+
+.image-wrapper img.show{
+  position:relative;/*이 img.show 요소를 상대 위치로 지정합니다. 아무 좌표값(top, left 등)을 주지 않으면 눈에 보이는 위치는 그대로지만,
+                      자식 요소가 absolute를 쓸 때 기준점이 이 요소가 됨.*/
+  opacity:1;/*자바스크립트로 슬라이드 전환하면서 opacity: 0과 opacity: 1을 토글해
+              자연스럽게 이미지 보이고 숨기기 위한 기본값 세팅.*/
+}
+
+button { /*공통 버튼 스타일*/
+  position: absolute; /*버튼 위치를 부모기준(.carousel)으로 자유롭게 배치할 수 있도록 만듦.*/
+    /*position:absolute만 지정하고 좌표값을 설정안하면 이게 기본값임
+    top   : auto;
+    right : auto;
+    bottom: auto;
+    left  : auto;
+    즉, 자기가 배치된 곳에 그대로 있음" 이라는 의미야.*/
+
+  top: 50%; /*버튼을 수직으로 중앙에 오게 하기 위해서 위에서 50% 내려옴 */
+
+  transform:translateX(-50%) translateY(-50%);;/* 버튼 자체 높이의 절반만큼 위로 올라감. 이렇게 해야 정확히 수직,수평 정중앙에 위치됨.*/
+  /*transform : HTML요소를 변형시킬때 사용하는 CSS속성. 즉,button 요소 자체를 변형(transform) 시키는 거야!*/
+  
+  background: rgba(0, 0, 0, 0.6);/*반투명한 검정 배경. 슬라이드 이미지 위에 버튼을 올릴 때 배경 대비 확보에 유용.*/
+  color: white;/*버튼 텍스트 색을 흰색으로 설정 → 검은 배경과 대비 높여 가독성 좋게.*/
+  border: none; /* 기본 버튼 스타일(border)을 제거해서 디자인 깔끔하게 */
+  font-size: 16px;
+  padding: 4px 6px;/* 버튼 내부 여백: 위아래 4px, 좌우 6px → 눌렀을 때 손맛 좋게 하는 용도. */
+  border-radius: 4px;/* 모서리를 둥글게 만들어서 디자인을 부드럽고 자연스럽게 보이게 함. */
+  cursor: pointer;
+  z-index: 1;/*이미지 위에 버튼이 겹쳐서 보이게 함. z-index가 없으면 버튼이 이미지 뒤로 숨을 수 있음. 
+               기본값(auto)은 사실상 0처럼 동작함. 버튼을 이미지 위에 보이게 하려면 명시적으로 z-index를 지정해야 함
+                z-index는 position속성이 적용된 것만 가능함*/
+
+  /*margin-bottom이 의미 없는 이유 
+   absolute 요소는 브라우저 레이아웃 흐름에서 빠져요.
+   그래서 margin을 줘도 다른 요소를 밀거나, 밀리지 않아요.*/
+
+  }
+
+
+/*💡 left right top bottom은 position속성이 있어야만 사용가능하다 [button에 position:absolute 적용했기 때문에 사용가능하다*/
+.previous { /*button.previous */
+  left: -20px; /*이전(◀) 버튼을 .carousel을 기준(width:500px)으로 왼쪽 바깥쪽(-20px)에 위치시킴 */
+}
+.next { /*button.next */
+  right: -10px;/* 다음(▶) 버튼을 .carousel을 기준(width:500px)으로 오른쪽 바깥쪽(-20px)에 위치시킴. */
+}
+
+
+.dots { /*.dots는 페이지 하단에 위치하는 슬라이드 인디케이터(작은 동그라미들)의 부모 컨테이너입니다*/
+  margin-top: 10px;
+}
+
+.dots span {  /*각 슬라이드를 나타내는 작은 점(dot) 하나하나를 의미하는 span 요소 스타일입니다.*/
+  display: inline-block; /*span은 기본적으로 inline 요소이기 때문에 너비/높이 조절이 안 됩니다.그래서 inline-block으로 바꿔줘야 width/height를 적용할 수 있어요.*/
+  width: 10px; /*width,height를 같게해 정사각형을 만든다.*/
+  height: 10px;
+  margin: 5px;
+  border-radius: 50%;/*정사각형을 원으로 만들어준다*/
+  background: #ccc;
+  cursor: pointer;
+}
+.dots span.active {
+  background: #333;/*.active가 붙으면 background가 #ccc(밝은회색)에서 어두운 회색(#333)으로 바뀌어 지금 보고 있는 슬라이드가 어떤 건지 사용자에게 명확히 표시해줍니다.*/
+}
+
+.thumbnails { /**/
+  margin-top: 10px; /*(.dots span)과 10px 띄운다*/
+  display: flex; /*자식(썸네일 이미지들)을 수평(가로) 정렬합니다.*/
+  justify-content: center; /*썸네일들을 x축(주축) 가운데 정렬합니다. 사용자 눈의 중앙을 기준으로 정렬되니 훨씬 보기 좋아요.*/
+  gap: 8px; /*썸네일 이미지 사이의 간격을 8px 줘서 띄움*/
+  flex-wrap: wrap;/*썸네일이 너무 많아 한 줄에 못 들어가면 자동으로 다음 줄로 줄 바꿈되도록 합니다. / 모바일 반응형 UI에도 유리합니다.*/
+}
+.thumbnails img { /*img는 width와height를 가지는 특별한 inline*/
+  width: 50px; /*썸네일 이미지를 정사각형 50x50 사이즈로 고정합니다. 작고 보기 좋은 크기로 만드는 기본값.*/
+  height: 50px;
+  object-fit: cover;/*이미지를 비율 유지하면서 빈 공간 없이 채우되, 넘치는 부분은 잘라냅니다.
+                      자주 쓰는 실무 속성! (비율 깨지지 않으면서 꽉 차게 할 수 있음)*/
+  cursor: pointer;
+  opacity: 0.6; /*살짝 반투명하게 처리함. 비활성 상태 느낌을 주는 시각적 트릭입니다*/
+  border-radius: 5px; /*모서리를 부드럽게 둥글게. 디자인을 좀 더 고급스럽게 만들어줍니다.*/
+  transition: transform 0.2s, opacity 0.2s; /*마우스로 hover했거나, .active 클래스 붙었을 때 자연스럽게 변화되도록
+                                              애니메이션 효과를 부드럽게 줍니다.
+               transform 속성이 바뀔 때,그 변화를 0.2초 동안 부드럽게 처리해라는 뜻입니다.
+               opacity (투명도)**가 변경될 때 마찬가지로 0.2초에 걸쳐 부드럽게 바뀌어라는 의미입니다.*/
+}
+.thumbnails img.active {
+  opacity: 1; /*불투명하게 (완전히 보이게) 만들어서 "선택됨"을 강조합니다.*/
+  transform: scale(1.1); /*이미지 크기를 10% 확대해서 시각적으로 강조 효과 줍니다.*/
+  border: 2px solid #333; /*테두리를 어두운 회색(#333)으로 두껍게 그려서 시각적 포커스 강조.
+                              현재 선택된 썸네일이 어떤 건지 분명하게 보이게 합니다.*/
+}

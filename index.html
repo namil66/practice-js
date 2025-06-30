@@ -5,24 +5,92 @@
     <title>JavaScript 펀더멘탈</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- CSS MIME 타입 (기본값 : text/css) 생략가능. -->
+    <link
+      rel="shoutcut icon"
+      href="./assets/favicon/android-icon-144x144.png"
+      type="image/x-icon"
+    />
     <link rel="stylesheet" href="./styles/main.css" />
     <!-- internal script -->
     <!-- JavaScript MIME 타입 (기본값 : text/javascript) 생략 가능. -->
     <!-- JavaScript 모듈(Module)로 호출 : "이 파일은 모듈 파일이다" 라고 선언 -->
-    <!-- <script src="./learn/01-hello.js"></script> -->
-    <!-- <script src="./learn/02-module.js"></script> -->
-    <!-- <script src="./learn/03-primitives.js"></script> -->
-    <!-- <script src="./learn/05-variables.js"></script> -->
-  
-    
-    <script src="./learn/07-function.js"></script>
-
-    <!-- 연습용 -->
-     <!-- <script src="./learn/04.-practice.js"></script> -->
-
-
   </head>
   <body>
     <h1>JavaScript 학습</h1>
+
+    <!-- 46번 js -->
+    <div hidden class="box box1">
+      <span>박스 1</span>
+      <div class="box box2">
+        <span>박스 2</span>
+        <div class="box box3">
+          <span>박스 3</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 48번 파일 -->
+   <div role="group" style="display: flex; gap: 4px; margin-block: 12px;">
+    <button type="button" data-role="add-event">이벤트 추가</button>
+    <button type="button" data-role="remove-event">이벤트 제거</button>
+    <button data-role="tester" type="button">이벤트 추가 대기중...</button>
+    <button type="button" data-role="once-event">1회만 이벤트 설정</button>
+  </div>
+
+  <!-- 45번 파일 -->
+    <ul class="link-list">
+      <li>
+        <a href="/news">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M15 18h-5" />
+            <path d="M18 14h-8" />
+            <path
+              d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"
+            />
+            <rect width="8" height="4" x="10" y="6" rx="1" />
+          </svg>
+          최신 뉴스 보기
+        </a>
+      </li>
+      <li><a href="/tutorials">📘 튜토리얼 모음</a></li>
+      <li><a href="/community">💬 커뮤니티 참여</a></li>
+      <li><a href="/resources">📁 개발 자료실</a></li>
+      <li><a href="/contact">📮 문의하기</a></li>
+    </ul>
+
+    <section class="life-tips">
+      <h2>생활 상식</h2>
+      <p>
+        배터리를 오래 쓰고 싶다면 100% 충전보다는 80~90%에서 사용을 멈추는 것이
+        좋습니다.
+      </p>
+      <p>
+        전자레인지에 금속 용기를 넣으면 화재 위험이 있으니 절대 사용하지 마세요.
+      </p>
+      <p>
+        흰 셔츠의 얼룩은 세탁 전에 식초나 베이킹소다로 미리 처리하면 잘
+        지워집니다.
+      </p>
+    </section>
+
+    <div id="star-wars">
+      <div class="character" data-type="good-guy">루크 스카이워커</div>
+      <div class="character" data-type="good-guy">요다</div>
+      <div class="character" data-type="villain">다스 베이더</div>
+    </div>
+
+    <button type="button" data-name="change-bg-color">배경색 변경</button>
+
+    <script src="./learn/48-remove-event-listener.js"></script>
   </body>
 </html>

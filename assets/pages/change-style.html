@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>스타일 변경 예제</title>
+    <style>
+      .box {
+        padding: 20px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="box">이 텍스트의 스타일이 바뀔 거예요!</p>
+    <button type="button" class="change-style-button">스타일 변경</button>
+    <script>
+      {
+        const BOX = document.getElementsByTagName(p);
+        BOX.style.setProperty("background", "#28712d");
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+body {
+  background-color: #fff;
+  &.is-clicked {
+    background-color: #000;
+  }
+}
+
+button {
+  background-color: #000;
+  &.is-clicked {
+    background-color: #fff;
+  }
+}

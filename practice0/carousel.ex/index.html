@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="index.css">
+  <script defer src="index.js"></script>
+</head>
+<body>
+  <div class="carousel"> <!--캘러셀 (몇 초 간격으로 자동으로 넘어가는 슬라이드)-->
+    <button class="previous" onclick="previousSlide()">&#9664</button> <!--&#9664 : ◀--> 
+    <!--이전 슬라이드로 이동하는 버튼입니다. onclick="prevSlide()"는 자바스크립트의 prevSlide() 함수를 호출합니다.-->
+
+    <div class="image-wrapper"> <!--실제 이미지(img)가 들어갈 영역입니다. 자바스크립트에서 이 div 안에 이미지를 넣고 바꿉니다.-->
+     
+    </div>
+    
+    <button class="next" onclick="nextSlide()">&#9654</button> <!--&#9654 : ▶ -->
+
+    <div class="dots" id="paginationDots"></div> <!-- 현재 슬라이드를 표시하는 하단 점 네비게이션 -->
+    <!--점 형태의 인디케이터 컨테이너입니다. 이 안에 자바스크립트가 <span>을 여러 개 동적으로 생성합니다.-->
+
+    <div class="thumbnails" id="thumbnailContainer"></div><!--썸네일즈 : 원본보다 작게 축소한 이미지 미리보기-->
+    <!--썸네일 미리보기를 위한 영역입니다. 자바스크립트가 여기 안에 <img>들을 생성해서 넣습니다.-->
+</body>
+</html>
