@@ -1,0 +1,14 @@
+{
+  "users": [
+    { "id": 1, "name": "남일쒸" },
+    { "id": 2, "name": "남덩" },
+    { "id": 3, "name": "스마일 망고" }
+  ],
+  "products": [
+    { "id": 1, "name": "콕콕콕 스파게티", "price": 1800, "userid": 1 },
+    { "id": 2, "name": "데체코 파스타 1kg", "price": 7680, "userid": 2 },
+    { "id": 3, "name": "토마토 소스 600g", "price": 4980, "userid": 3 },
+    { "id": 4, "name": "BBQ 황금 올리브 치킨", "price": 23000, "userid": 4 },
+    { "id": 5, "name": "디벨라 파스타 1kg", "price": 3000, "userid": 5 }
+  ]
+}
